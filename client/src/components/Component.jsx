@@ -23,7 +23,7 @@ const Component = () => {
     const { prompt, size } = data;
     setText(prompt);
     try {
-      await Axios.post(POST_URL, { prompt, size });
+      const { data } = await Axios.post(POST_URL, { prompt, size });
       data.status === true && setURL(data.data);
     } catch (err) {
       console.log(err)
