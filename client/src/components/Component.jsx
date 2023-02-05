@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import PropagateLoader from 'react-spinners/PropagateLoader';
 import Axios from 'axios';
 
 import Image from './Image';
 
 const Component = () => {
-  const POST_URL = "http://localhost:5000/api/v1/generateImage";
   const [URL, setURL] = useState('');
   const [text, setText] = useState('');
   const schema = yup.object().shape({
@@ -15,7 +15,7 @@ const Component = () => {
     size: yup.string().required()
   });
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit, formState: { isSubmitting } } = useForm({
     resolver: yupResolver(schema)
   });
 
@@ -23,7 +23,7 @@ const Component = () => {
     const { prompt, size } = data;
     setText(prompt);
     try {
-      const { data } = await Axios.post(POST_URL, { prompt, size });
+      const { data } = await Axios.post("https://oaiig-backend.onrender.com/api/v1/generateImage", { prompt, size });
       data.status === true && setURL(data.data);
     } catch (err) {
       console.log(err)
@@ -51,7 +51,13 @@ const Component = () => {
           <button type='submit' className="text-white bg-black border-0 py-1 px-4 rounded text-lg my-2 font-medium">Generate Image</button>
         </form>
       </section>
-      <Image url={URL} alt={text} />
+      {isSubmitting ? <div className='flex items-center justify-center my-3'>
+        <PropagateLoader
+          color="#000000"
+          size={10}
+        />
+      </div> :
+        URL && <Image url={URL} alt={text} />}
     </>
   )
 }

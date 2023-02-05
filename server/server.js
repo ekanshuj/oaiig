@@ -8,7 +8,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 dotenv.config();
 
-app.use(express.static(path.join(__dirname, './public/index.html')));
 app.use(express.json());
 app.use(cors());
 
